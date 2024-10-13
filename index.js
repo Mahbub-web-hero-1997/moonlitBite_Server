@@ -34,8 +34,15 @@ async function run() {
     app.get("/menu", async (req, res) => {
       const cursor = menuCollections.find();
       const result = await cursor.toArray();
-
       res.send(result);
+    });
+    app.get("/menu", async (req, res) => {
+      const query = { runtime: { $search: "salad" } };
+      const options = {
+        sort: { category: 1 },
+      };
+      const result = await menuCollections.find(query, options);
+      console.log(result);
     });
     //   ********************************************************************
     //                    Pagination
@@ -47,11 +54,12 @@ async function run() {
     //   ********************************************************************
     //                    Category Api
     //   ********************************************************************
-    app.post("/category", async (req, res) => {
-      const category = req.body;
-      const result = await categoryCollection.insertOne(category);
-      res.send(result);
-    });
+    // app.post("/category", async (req, res) => {
+    //   const category = req.body;
+    //   const result = await categoryCollection.insertOne(category);
+    //   res.send(result);
+    // });
+
     app.get("/category", async (req, res) => {
       const cursor = categoryCollection.find();
       const result = await cursor.toArray();
