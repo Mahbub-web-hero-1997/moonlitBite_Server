@@ -22,7 +22,9 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const menuCollections = client.db("Menus").collection("Menu");
-    const categoryCollection = client.db("Categories").collection("Category");
+    const storyCollections = client.db("Stories").collection("Story");
+    const partyCollections = client.db("Parties").collection("Party");
+
     //   ********************************************************************
     //                     Menu Collection api Here
     //   ********************************************************************
@@ -36,14 +38,7 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
-    app.get("/menu", async (req, res) => {
-      const query = { runtime: { $search: "salad" } };
-      const options = {
-        sort: { category: 1 },
-      };
-      const result = await menuCollections.find(query, options);
-      console.log(result);
-    });
+
     //   ********************************************************************
     //                    Pagination
     //   ********************************************************************
@@ -52,17 +47,28 @@ async function run() {
       res.send({ totalItems });
     });
     //   ********************************************************************
-    //                    Category Api
+    //                    Story Api
     //   ********************************************************************
-    // app.post("/category", async (req, res) => {
-    //   const category = req.body;
-    //   const result = await categoryCollection.insertOne(category);
-    //   res.send(result);
-    // });
 
-    app.get("/category", async (req, res) => {
-      const cursor = categoryCollection.find();
+    app.post("/story", async (req, res) => {
+      const story = req.body;
+      const result = await storyCollections.insertOne(story);
+      res.send(result);
+    });
+    app.get("/story", async (req, res) => {
+      const cursor = storyCollections.find();
       const result = await cursor.toArray();
+      res.send(result);
+    });
+    // Party Api Here
+    app.post("/party", async (req, res) => {
+      party = req.body;
+      const result = await partyCollections.insertOne(party);
+      res.send(result);
+    });
+    app.get("/party", async (req, res) => {
+      const cursor = partyCollections.find();
+      const result = cursor.toArray();
       res.send(result);
     });
   } finally {
