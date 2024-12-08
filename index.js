@@ -68,7 +68,7 @@ async function run() {
     });
     app.get("/party", async (req, res) => {
       const cursor = partyCollections.find();
-      const result = cursor.toArray();
+      const result = await cursor.toArray();
       res.send(result);
     });
   } finally {
