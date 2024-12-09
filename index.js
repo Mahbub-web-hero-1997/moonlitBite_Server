@@ -24,6 +24,7 @@ async function run() {
     const menuCollections = client.db("Menus").collection("Menu");
     const storyCollections = client.db("Stories").collection("Story");
     const partyCollections = client.db("Parties").collection("Party");
+    const expertsCollection = client.db("Experts").collection("Expert");
 
     //   ********************************************************************
     //                     Menu Collection api Here
@@ -68,6 +69,17 @@ async function run() {
     });
     app.get("/party", async (req, res) => {
       const cursor = partyCollections.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+    // Experties Api Here
+    app.post("/expert", async (req, res) => {
+      expert = req.body;
+      const result = await expertsCollection.insertOne(expert);
+      res.send(result);
+    });
+    app.get("/expert", async (req, res) => {
+      const cursor = expertsCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     });
