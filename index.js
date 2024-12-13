@@ -26,6 +26,7 @@ async function run() {
     const partyCollections = client.db("Parties").collection("Party");
     const expertsCollection = client.db("Experts").collection("Expert");
     const reviewsCollection = client.db("Reviews").collection("Review");
+    const cartCollection = client.db("CartItem").collection("cart");
 
     //   ********************************************************************
     //                     Menu Collection api Here
@@ -93,6 +94,12 @@ async function run() {
     app.get("/review", async (req, res) => {
       const cursor = reviewsCollection.find();
       const result = await cursor.toArray();
+      res.send(result);
+    });
+    // Cart Api
+    app.post("/cart", async (req, res) => {
+      const cartItem = req.body;
+      const result = await cartCollection.insertOne(cartItem);
       res.send(result);
     });
   } finally {
