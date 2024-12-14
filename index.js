@@ -103,9 +103,11 @@ async function run() {
       res.send(result);
     });
     app.get("/cart", async (req, res) => {
-      const cursor = cartCollection.find()
-      const result = cursor.toArray()
-      res.send(result)
+      const email = req.query.email;
+      const query = { email: email }
+      const result = await cartCollection.find(query).toArray()
+        res.send(result)
+      
     })
   } finally {
     // Ensures that the client will close when you finish/error
