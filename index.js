@@ -109,11 +109,12 @@ async function run() {
         res.send(result)
       
     })
-    app.delete("/cart/:id", async (req, res) => {
-      const id = req.query.id;
-      const query = { id: new ObjectId(id) }
-      const result = cartCollection.deleteOne(query)
+    app.delete("/cart/:id", async(req, res)=>{
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result= await cartCollection.deleteOne(query)
       res.send(result)
+      
     })
   } finally {
     // Ensures that the client will close when you finish/error
