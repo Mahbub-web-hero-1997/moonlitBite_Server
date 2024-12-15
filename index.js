@@ -27,6 +27,7 @@ async function run() {
     const expertsCollection = client.db("Experts").collection("Expert");
     const reviewsCollection = client.db("Reviews").collection("Review");
     const cartCollection = client.db("CartItem").collection("cart");
+    const usersCollection = client.db("Users").collection("user");
 
     //   ********************************************************************
     //                     Menu Collection api Here
@@ -115,6 +116,13 @@ async function run() {
       const result= await cartCollection.deleteOne(query)
       res.send(result)
       
+    })
+
+    // User Api
+    app.post("/user", async (req, res) => {
+      const user = req.body;
+      const result = await usersCollection.insertOne(user);
+      res.send(result)
     })
   } finally {
     // Ensures that the client will close when you finish/error
