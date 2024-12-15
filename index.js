@@ -7,7 +7,7 @@ app.use(express());
 app.use(cors());
 const port = process.env.PORT || 5000;
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = `mongodb+srv://${process.env.MOONLIT_DB_USER}:${process.env.MOONLIT_DB_PASS_CODE}@cluster0.zxzg3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -108,6 +108,12 @@ async function run() {
       const result = await cartCollection.find(query).toArray()
         res.send(result)
       
+    })
+    app.delete("/cart/:id", async (req, res) => {
+      const id = req.query.id;
+      const query = { id: new ObjectId(id) }
+      const result = cartCollection.deleteOne(query)
+      res.send(result)
     })
   } finally {
     // Ensures that the client will close when you finish/error
