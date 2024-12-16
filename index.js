@@ -119,6 +119,11 @@ async function run() {
     })
 
     // User Api
+    app.get("/user", async (req, res) => {
+      const cursor = usersCollection.find()
+      const result = await cursor.toArray()
+      res.send(result)
+    })
     app.post("/user", async (req, res) => {
       const user = req.body;
       const query = {email:user.email}
