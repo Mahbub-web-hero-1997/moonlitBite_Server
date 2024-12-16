@@ -30,6 +30,23 @@ async function run() {
     const cartCollection = client.db("CartItem").collection("cart");
     const usersCollection = client.db("Users").collection("user");
 
+
+    //   ********************************************************************
+    //                     JWT Related api Here
+    //   ********************************************************************
+
+    app.post("/jwt", async (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, process.env.ACCESS_tOKEN_SECRET, {
+        expiresIn:"1h"
+      });
+      res.send({token})    
+      
+    })
+
+
+
+
     //   ********************************************************************
     //                     Menu Collection api Here
     //   ********************************************************************
