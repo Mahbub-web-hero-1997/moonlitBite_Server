@@ -40,12 +40,28 @@ async function run() {
       const token = jwt.sign(user, process.env.ACCESS_tOKEN_SECRET, {
         expiresIn:"1h"
       });
-      res.send({token})    
-      
+      res.send({token})  
     })
 
+    //   ********************************************************************
+    //                     Menu Collection api Here
+    //   ********************************************************************
 
-
+    const verifyToken = (req, res, next)=>{
+      console.log({ Token: req.headers });
+      if (!req.headers.authorization) {
+        res.status(401).send({message:"Forbidden Access"})
+      } 
+      const token = req.headers.authorization.split(' ')[1]
+      jwt.verify(token, process.env.ACCESS_tOKEN_SECRET, (err, decoded) => {
+        if (err) {
+          res.status(401).send("Forbidden")
+        }
+        req.decoded = decoded;
+        next()
+      })
+      
+    }
 
     //   ********************************************************************
     //                     Menu Collection api Here
@@ -136,13 +152,14 @@ async function run() {
     })
 
     // User Api
-    app.get("/user", async (req, res) => {
+    app.get("/user", verifyToken, async (req, res) => {
+        //  console.log(req.headers);
       const cursor = usersCollection.find()
       const result = await cursor.toArray()
       res.send(result)
     })
     app.post("/user", async (req, res) => {
-      const user = req.body;
+      const user = req.body; 
       const query = {email:user.email}
       const existingUser = await usersCollection.findOne(query)
       if (existingUser) {        
