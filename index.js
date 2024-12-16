@@ -121,8 +121,13 @@ async function run() {
     // User Api
     app.post("/user", async (req, res) => {
       const user = req.body;
+      const query = {email:user.email}
+      const existingUser = await usersCollection.findOne(query)
+      if (existingUser) {        
+        return res.send({ message: "User Already Exist", insertedId:null });
+      }
       const result = await usersCollection.insertOne(user);
-      res.send(result)
+      res.send(result);
     })
   } finally {
     // Ensures that the client will close when you finish/error
