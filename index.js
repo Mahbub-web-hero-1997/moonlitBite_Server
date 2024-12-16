@@ -139,6 +139,15 @@ async function run() {
       const result = await usersCollection.deleteOne(query)
       res.send(result)
     })
+    app.patch("/user/admin/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) }
+      const updatedDocs= {
+        $set:{role:"admin"}
+      }
+      const result = await usersCollection.updateOne(filter, updatedDocs)
+      res.send(result)
+    })
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
