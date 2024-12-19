@@ -48,7 +48,7 @@ async function run() {
     //   ********************************************************************
 
     const verifyToken = (req, res, next)=>{
-      console.log({ Token: req.headers });
+      console.log({ Token: req.headers.authorization });
       if (!req.headers.authorization) {
         res.status(401).send({message:"Forbidden Access"})
       } 
@@ -180,6 +180,21 @@ async function run() {
       const updatedDocs= {
         $set:{role:"admin"}
       }
+      app.get("/user/admin/:email", verifyToken, async (req, res) => {
+        const email = req.params.email;
+        if (email !==req.decoded.email) {
+        return res.status(403).send({message:"Unauthorized Access"})
+        }
+        const query = { email: email }
+        const user = await usersCollection.findOne(query)
+        let admin = false;
+        if (user) {
+          admin=user?.role==="admin"
+        }
+
+        res.send({admin})
+
+    })
       const result = await usersCollection.updateOne(filter, updatedDocs)
       res.send(result)
     })
