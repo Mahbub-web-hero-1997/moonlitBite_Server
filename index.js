@@ -75,7 +75,12 @@ async function run() {
     //   ********************************************************************
     //                     Blog Collection api Here
     //   ********************************************************************
-    app.post("/blogs", verifyToken, verifyAdmin, async (req, res) => {
+    app.get("/blogs", async (req, res) => {
+      const cursor = blogsCollection.find()
+      const result = await cursor.toArray()
+      res.send(result)
+    })
+    app.post("/blogs", verifyToken, async (req, res) => {
       const blog = req.body;
       const result = await blogsCollection.insertOne(blog);
       res.send(result)  
