@@ -38,7 +38,7 @@ async function run() {
     app.post("/jwt", async (req, res) => {
       const user = req.body;
       const token = jwt.sign(user, process.env.ACCESS_tOKEN_SECRET, {
-        expiresIn: "12h",
+        expiresIn: "1h",
       });
 
       res.send({ token });
@@ -49,13 +49,13 @@ async function run() {
     //   ********************************************************************
 
     const verifyToken = (req, res, next) => {
+      console.log({ Message: req.headers.authorization });  
       if (!req.headers.authorization) {
-        res.status(401).send({ message: "Forbidden Access" });
-      }
-      const token = req.headers.authorization.split(" ")[1];
+      return res.status(401).send({ message: "UnAuthorized Access" });}          
+      const token = req.headers.authorization?.split(" ")?.[1];
       jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
         if (err) {
-          res.status(401).send("Forbidden");
+          return res.status(401).send("Forbidden");
         }
         req.decoded = decoded;
         next();
@@ -217,19 +217,20 @@ async function run() {
       const result = await usersCollection.updateOne(filter, updatedDocs);
       res.send(result);
     });
-    // app.get("/user/admin/:email", verifyToken, async (req, res) => {
-    //   const email = req.params.email;
-    //   if (email !== req.decoded.email) {
-    //     return res.status(403).send({ message: "Unauthorized Access" });
-    //   }
-    //   const query = { email: email };
-    //   const user = await usersCollection.findOne(query);
-    //   let admin = false;
-    //   if (user) {
-    //     admin = user?.role === "admin";
-    //   }
-    //   res.send({ admin });
-    // });
+    app.get("/user/admin/:email", verifyToken, async (req, res) => {
+      const email = req.params.email;
+      console.log(req.decoded);      
+      if (email !== req.decoded.email) {
+        return res.status(403).send({ message: "Unauthorized Access" });
+      }
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      let admin = false;
+      if (user) {
+        admin = user?.role === "admin";
+      }
+      res.send({ admin });
+    });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
