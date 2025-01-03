@@ -29,6 +29,7 @@ async function run() {
     const reviewsCollection = client.db("Reviews").collection("Review");
     const cartCollection = client.db("CartItem").collection("cart");
     const usersCollection = client.db("Users").collection("user");
+    const blogsCollection=client.db("Blogs").collection("blog")
 
     //   ********************************************************************
     //                     JWT Related api Here
@@ -37,22 +38,22 @@ async function run() {
     app.post("/jwt", async (req, res) => {
       const user = req.body;
       const token = jwt.sign(user, process.env.ACCESS_tOKEN_SECRET, {
-        expiresIn: "1h",
+        expiresIn: "12h",
       });
 
       res.send({ token });
     });
 
     //   ********************************************************************
-    //                     Menu Collection api Here
+    //                    Verify Token api
     //   ********************************************************************
 
     const verifyToken = (req, res, next) => {
       if (!req.headers.authorization) {
         res.status(401).send({ message: "Forbidden Access" });
       }
-      const token = req.headers.authorization.split(' ')[1]
-      jwt.verify(token, process.env.ACCESS_tOKEN_SECRET, (err, decoded) => {
+      const token = req.headers.authorization.split(" ")[1];
+      jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
         if (err) {
           res.status(401).send("Forbidden");
         }
@@ -72,6 +73,14 @@ async function run() {
       next();
     };
     //   ********************************************************************
+    //                     Blog Collection api Here
+    //   ********************************************************************
+    app.post("/blogs", verifyToken, verifyAdmin, async (req, res) => {
+      const blog = req.body;
+      const result = await blogsCollection.insertOne(blog);
+      res.send(result)  
+})
+    //   ********************************************************************
     //                     Menu Collection api Here
     //   ********************************************************************
     app.post("/menu", verifyToken, verifyAdmin, async (req, res) => {
@@ -86,18 +95,17 @@ async function run() {
     });
     app.get("/menu/:id", async (req, res) => {
       const id = req.params.id;
-      const query = { _id: new ObjectId(id) }
-      const result = await menuCollections.findOne(query)
-      res.send(result)
+      const query = { _id: new ObjectId(id) };
+      const result = await menuCollections.findOne(query);
+      res.send(result);
     });
 
     app.delete("/menu/:id", verifyToken, verifyAdmin, async (req, res) => {
       const id = req.params.id;
-      const filter = { _id: new ObjectId(id) }
-      const result = await menuCollections.deleteOne(filter)
-      res.send(result)     
-    
-    })
+      const filter = { _id: new ObjectId(id) };
+      const result = await menuCollections.deleteOne(filter);
+      res.send(result);
+    });
 
     //   ********************************************************************
     //                    Pagination
@@ -204,19 +212,19 @@ async function run() {
       const result = await usersCollection.updateOne(filter, updatedDocs);
       res.send(result);
     });
-    app.get("/user/admin/:email", verifyToken, async (req, res) => {
-      const email = req.params.email;
-      if (email !== req.decoded.email) {
-        return res.status(403).send({ message: "Unauthorized Access" });
-      }
-      const query = { email: email };
-      const user = await usersCollection.findOne(query);
-      let admin = false;
-      if (user) {
-        admin = user?.role === "admin";
-      }
-      res.send({ admin });
-    });
+    // app.get("/user/admin/:email", verifyToken, async (req, res) => {
+    //   const email = req.params.email;
+    //   if (email !== req.decoded.email) {
+    //     return res.status(403).send({ message: "Unauthorized Access" });
+    //   }
+    //   const query = { email: email };
+    //   const user = await usersCollection.findOne(query);
+    //   let admin = false;
+    //   if (user) {
+    //     admin = user?.role === "admin";
+    //   }
+    //   res.send({ admin });
+    // });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
