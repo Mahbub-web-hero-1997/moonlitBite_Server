@@ -29,7 +29,8 @@ async function run() {
     const reviewsCollection = client.db("Reviews").collection("Review");
     const cartCollection = client.db("CartItem").collection("cart");
     const usersCollection = client.db("Users").collection("user");
-    const blogsCollection=client.db("Blogs").collection("blog")
+    const blogsCollection = client.db("Blogs").collection("blog");
+    const bookingsCollection = client.db("Bookings").collection("booking");
 
     //   ********************************************************************
     //                     JWT Related api Here
@@ -49,9 +50,10 @@ async function run() {
     //   ********************************************************************
 
     const verifyToken = (req, res, next) => {
-      console.log({ Message: req.headers.authorization });  
+      console.log({ Message: req.headers.authorization });
       if (!req.headers.authorization) {
-      return res.status(401).send({ message: "UnAuthorized Access" });}          
+        return res.status(401).send({ message: "UnAuthorized Access" });
+      }
       const token = req.headers.authorization?.split(" ")?.[1];
       jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
         if (err) {
@@ -73,18 +75,27 @@ async function run() {
       next();
     };
     //   ********************************************************************
+    //                     Bookings Collection api Here
+    //   ********************************************************************
+
+    app.get("/booking/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);      
+    })
+
+    //   ********************************************************************
     //                     Blog Collection api Here
     //   ********************************************************************
     app.get("/blogs", async (req, res) => {
-      const cursor = blogsCollection.find()
-      const result = await cursor.toArray()
-      res.send(result)
-    })
+      const cursor = blogsCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
     app.post("/blogs", verifyToken, async (req, res) => {
       const blog = req.body;
       const result = await blogsCollection.insertOne(blog);
-      res.send(result)  
-})
+      res.send(result);
+    });
     //   ********************************************************************
     //                     Menu Collection api Here
     //   ********************************************************************
@@ -219,7 +230,7 @@ async function run() {
     });
     app.get("/user/admin/:email", verifyToken, async (req, res) => {
       const email = req.params.email;
-      console.log(req.decoded);      
+      console.log(req.decoded);
       if (email !== req.decoded.email) {
         return res.status(403).send({ message: "Unauthorized Access" });
       }
