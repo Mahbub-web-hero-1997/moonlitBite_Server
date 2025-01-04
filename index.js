@@ -77,20 +77,24 @@ async function run() {
     //   ********************************************************************
     //                     Bookings Collection api Here
     //   ********************************************************************
-
+    app.get("/booking", async (req, res) => {
+      const email = req.query.email;
+      const query = { email }
+      const result = await bookingsCollection.find(query).toArray()
+      res.send(result)
+    });
     app.get("/booking/:id", async (req, res) => {
       const id = req.params.id;
-      const filter = { _id: new ObjectId(id) }
-      const result = await bookingsCollection.findOne(filter)          
-      res.send(result)
-    })
+      const filter = { _id: new ObjectId(id) };
+      const result = await bookingsCollection.findOne(filter)
+      res.send(result);
+    });
 
     app.post("/booking", verifyToken, async (req, res) => {
       const item = req.body;
-      const result = await bookingsCollection.insertOne(item)
-      res.send(result)
-
-    })
+      const result = await bookingsCollection.insertOne(item);
+      res.send(result);
+    });
 
     //   ********************************************************************
     //                     Blog Collection api Here
