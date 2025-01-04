@@ -50,7 +50,7 @@ async function run() {
     //   ********************************************************************
 
     const verifyToken = (req, res, next) => {
-      console.log({ Message: req.headers.authorization });
+      // console.log({ Message: req.headers.authorization });
       if (!req.headers.authorization) {
         return res.status(401).send({ message: "UnAuthorized Access" });
       }
@@ -80,7 +80,9 @@ async function run() {
 
     app.get("/booking/:id", async (req, res) => {
       const id = req.params.id;
-      console.log(id);      
+      const filter = { _id: new ObjectId(id) }
+      const result = await bookingsCollection.findOne(filter)          
+      res.send(result)
     })
 
     //   ********************************************************************
@@ -230,7 +232,7 @@ async function run() {
     });
     app.get("/user/admin/:email", verifyToken, async (req, res) => {
       const email = req.params.email;
-      console.log(req.decoded);
+      // console.log(req.decoded);
       if (email !== req.decoded.email) {
         return res.status(403).send({ message: "Unauthorized Access" });
       }
