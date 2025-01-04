@@ -85,6 +85,13 @@ async function run() {
       res.send(result)
     })
 
+    app.post("/booking", verifyToken, async (req, res) => {
+      const item = req.body;
+      const result = await bookingsCollection.insertOne(item)
+      res.send(result)
+
+    })
+
     //   ********************************************************************
     //                     Blog Collection api Here
     //   ********************************************************************
