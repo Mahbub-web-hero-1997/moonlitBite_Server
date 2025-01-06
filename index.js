@@ -78,11 +78,16 @@ async function run() {
     //                     Bookings Collection api Here
     //   ********************************************************************
     app.get("/booking", async (req, res) => {
+      const cursor = await bookingsCollection.find().toArray();     
+        res.send(cursor)    
+    });
+    app.get("/booking", async (req, res) => {
       const email = req.query.email;
       const query = { email }
       const result = await bookingsCollection.find(query).toArray()
       res.send(result)
     });
+     
     app.get("/booking/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
