@@ -77,21 +77,20 @@ async function run() {
     //   ********************************************************************
     //                     Bookings Collection api Here
     //   ********************************************************************
-    app.get("/booking", async (req, res) => {
-      const cursor = await bookingsCollection.find().toArray();     
-        res.send(cursor)    
+    app.get("/booking",  async (req, res) => {
+      const cursor = await bookingsCollection.find().toArray();
+      res.send(cursor);
     });
-    app.get("/booking", async (req, res) => {
+    app.get("/booking", verifyToken, async (req, res) => {
       const email = req.query.email;
-      const query = { email }
-      const result = await bookingsCollection.find(query).toArray()
-      res.send(result)
+      const query = { email };
+      const result = await bookingsCollection.find(query).toArray();
+      res.send(result);
     });
-     
     app.get("/booking/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
-      const result = await bookingsCollection.findOne(filter)
+      const result = await bookingsCollection.findOne(filter);
       res.send(result);
     });
 
@@ -221,7 +220,7 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
-    app.post("/user", verifyToken, verifyAdmin, async (req, res) => {
+    app.post("/user", async (req, res) => {
       const user = req.body;
       const query = { email: user.email };
       const existingUser = await usersCollection.findOne(query);
