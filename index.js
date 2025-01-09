@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const stripe = require("stripe")(`${process.env.STRIPE_SECRET_KEY}`);
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const app = express();
@@ -212,6 +213,18 @@ async function run() {
       const result = await cartCollection.deleteOne(query);
       res.send(result);
     });
+    app.post('/create-payment-intent', async (req, res) => {
+      const { price } = req.body;
+      const amount = parseInt(price * 100)
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "usd",
+        payment_method_types:["cart"]
+      });
+      res.send({
+        clientSecret: paymentIntent.client_secret
+      })
+    })
 
     // User Api
     app.get("/user", verifyToken, verifyAdmin, async (req, res) => {
