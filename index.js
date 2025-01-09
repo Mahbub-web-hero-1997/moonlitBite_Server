@@ -1,11 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-const stripe = require("stripe")(`${process.env.STRIPE_SECRET_KEY}`);
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const app = express();
 app.use(express.json());
-app.use(express());
+// app.use(express());
 app.use(cors());
 const port = process.env.PORT || 5000;
 
@@ -78,7 +78,7 @@ async function run() {
     //   ********************************************************************
     //                     Bookings Collection api Here
     //   ********************************************************************
-    app.get("/booking",  async (req, res) => {
+    app.get("/booking", async (req, res) => {
       const cursor = await bookingsCollection.find().toArray();
       res.send(cursor);
     });
@@ -213,18 +213,26 @@ async function run() {
       const result = await cartCollection.deleteOne(query);
       res.send(result);
     });
-    app.post('/create-payment-intent', async (req, res) => {
-      const { price } = req.body;
-      const amount = parseInt(price * 100)
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: amount,
-        currency: "usd",
-        payment_method_types:["cart"]
-      });
-      res.send({
-        clientSecret: paymentIntent.client_secret
-      })
-    })
+    app.post("/create-payment-intent", async (req, res) => {
+      try {
+        const { price } = req.body; 
+        if (!price || isNaN(price) || price <= 0) {
+          return res.status(400).send({ error: "Invalid price" });
+        }       
+        const amount = Math.round(parseFloat(price) * 100);    
+        const paymentIntent = await stripe.paymentIntents.create({
+          amount: amount,
+          currency: "usd",
+          payment_method_types: ["card"], 
+        }); 
+        res.send({
+          clientSecret: paymentIntent.client_secret,
+        });
+      } catch (error) {
+        console.error("Error creating payment intent:", error.message);
+        res.status(500).send({ error: "Failed to create payment intent" });
+      }
+    });
 
     // User Api
     app.get("/user", verifyToken, verifyAdmin, async (req, res) => {
