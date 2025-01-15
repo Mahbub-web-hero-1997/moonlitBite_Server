@@ -32,7 +32,7 @@ async function run() {
     const usersCollection = client.db("Users").collection("user");
     const blogsCollection = client.db("Blogs").collection("blog");
     const bookingsCollection = client.db("Bookings").collection("booking");
-
+    const paymentsCollection=client.db("Payments").collection("Payment")
     //   ********************************************************************
     //                     JWT Related api Here
     //   ********************************************************************
@@ -280,6 +280,13 @@ async function run() {
       }
       res.send({ admin });
     });
+
+    // Payment Data and Status Related Api
+    app.post("/payments",  async (req, res) => {
+      const payment = req.body;
+      const result = await paymentsCollection.insertOne(payment);
+      res.send(result)
+    })
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
