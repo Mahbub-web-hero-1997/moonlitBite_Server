@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const app = express();
 app.use(express.json());
@@ -32,7 +33,7 @@ async function run() {
     const usersCollection = client.db("Users").collection("user");
     const blogsCollection = client.db("Blogs").collection("blog");
     const bookingsCollection = client.db("Bookings").collection("booking");
-    const paymentsCollection=client.db("Payments").collection("Payment")
+    const paymentsCollection = client.db("Payments").collection("Payment");
     //   ********************************************************************
     //                     JWT Related api Here
     //   ********************************************************************
@@ -213,26 +214,6 @@ async function run() {
       const result = await cartCollection.deleteOne(query);
       res.send(result);
     });
-    app.post("/create-payment-intent", async (req, res) => {
-      try {
-        const { price } = req.body; 
-        if (!price || isNaN(price) || price <= 0) {
-          return res.status(400).send({ error: "Invalid price" });
-        }       
-        const amount = Math.round(parseFloat(price) * 100);    
-        const paymentIntent = await stripe.paymentIntents.create({
-          amount: amount,
-          currency: "usd",
-          payment_method_types: ["card"], 
-        }); 
-        res.send({
-          clientSecret: paymentIntent.client_secret,
-        });
-      } catch (error) {
-        console.error("Error creating payment intent:", error.message);
-        res.status(500).send({ error: "Failed to create payment intent" });
-      }
-    });
 
     // User Api
     app.get("/user", verifyToken, verifyAdmin, async (req, res) => {
@@ -280,11 +261,36 @@ async function run() {
       }
       res.send({ admin });
     });
-
     // Payment Data and Status Related Api
-    app.post("/payments",  async (req, res) => {
+    app.post("/create-payment-intent", async (req, res) => {
+      try {
+        const { price } = req.body;
+        if (!price || isNaN(price) || price <= 0) {
+          return res.status(400).send({ error: "Invalid price" });
+        }
+        const amount = Math.round(parseFloat(price) * 100);
+        const paymentIntent = await stripe.paymentIntents.create({
+          amount: amount,
+          currency: "usd",
+          payment_method_types: ["card"],
+        });
+        res.send({
+          clientSecret: paymentIntent.client_secret,
+        });
+      } catch (error) {
+        console.error("Error creating payment intent:", error.message);
+        res.status(500).send({ error: "Failed to create payment intent" });
+      }
+    });
+
+    app.post("/payments", async (req, res) => {
       const payment = req.body;
       const result = await paymentsCollection.insertOne(payment);
+      res.send(result);
+    });
+    app.get("/payments", async(req,res)=>{
+      const cursor= paymentsCollection.find()
+      const result= await cursor.toArray()
       res.send(result)
     })
   } finally {
