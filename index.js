@@ -43,7 +43,7 @@ async function run() {
       const token = jwt.sign(user, process.env.ACCESS_tOKEN_SECRET, {
         expiresIn: "1h",
       });
-
+      console.log(token);
       res.send({ token });
     });
 
@@ -288,11 +288,11 @@ async function run() {
       const result = await paymentsCollection.insertOne(payment);
       res.send(result);
     });
-    app.get("/payments", async(req,res)=>{
-      const cursor= paymentsCollection.find()
-      const result= await cursor.toArray()
-      res.send(result)
-    })
+    app.get("/payments", async (req, res) => {
+      const cursor = paymentsCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
