@@ -8,8 +8,9 @@ app.use(express.static("./public/"))
 app.use(express.urlencoded({ extended: true, limit:"16kb"}))
 app.use(cookieParser())
 
-import router from "./Routes/menus.route.js"
-app.use(router);
+import menuRoutes from "./Routes/menus.route.js"
+app.use("/api/v1/menus", menuRoutes);
+
 
 
 

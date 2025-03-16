@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { getAllMenus } from "../Controllers/menus.controller.js";
+import { createMenu, getAllMenus } from "../Controllers/menus.controller.js";
+import upload from "../Middlewares/multer.middleware.js";
 
-const router=new Router()
+const router = new Router();
 
-router.route("/menu").get(getAllMenus);
+router.route("/all").get(getAllMenus);
+router.route("/create").post(upload.array("image"), createMenu);
 
 export default router;
