@@ -83,4 +83,14 @@ const updateMenu = asyncHandler(async (req, res) => {
   });
   res.status(200).json(new ApiResponse(200, menu, "Menu updated successfully"));
 });
-export { getAllMenus, createMenu, GetMenuById, updateMenu };
+
+// delete menu
+const deleteMenu=asyncHandler(async(req, res)=>{
+    const {id}=req.params;
+    const menu=await Menu.findByIdAndDelete(id);
+    if(!menu){
+        throw new ApiErrors(404, "Menu not found");
+    }
+    res.status(200).json(new ApiResponse(200, menu, "Menu deleted successfully"));
+})
+export { getAllMenus, createMenu, GetMenuById, updateMenu, deleteMenu };
