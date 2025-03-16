@@ -45,5 +45,13 @@ const createMenu = asyncHandler(async (req, res) => {
   });
   res.status(201).json(new ApiResponse(201, menu, "Menu created successfully"));
 });
-
-export { getAllMenus, createMenu };
+// get menu by Id
+const GetMenuById = asyncHandler(async(req,res)=>{
+   const {id}=req.params;
+   const menu=await Menu.findById(id);
+   if(!menu){
+    throw new ApiErrors(404, "Menu not found");
+   }
+   res.json(new ApiResponse(200, menu, "Menu fetched successfully"));
+})
+export { getAllMenus, createMenu, GetMenuById };
