@@ -46,12 +46,41 @@ const createMenu = asyncHandler(async (req, res) => {
   res.status(201).json(new ApiResponse(201, menu, "Menu created successfully"));
 });
 // get menu by Id
-const GetMenuById = asyncHandler(async(req,res)=>{
-   const {id}=req.params;
-   const menu=await Menu.findById(id);
-   if(!menu){
+const GetMenuById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const menu = await Menu.findById(id);
+  if (!menu) {
     throw new ApiErrors(404, "Menu not found");
-   }
-   res.json(new ApiResponse(200, menu, "Menu fetched successfully"));
-})
-export { getAllMenus, createMenu, GetMenuById };
+  }
+  res.json(new ApiResponse(200, menu, "Menu fetched successfully"));
+});
+// update menu
+const updateMenu = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { name, category, price, recipe } = req.body;
+  let menu = await Menu.findById(id);
+  if (!menu) {
+    throw new ApiErrors(404, "Menu not found");
+  }
+
+  const imageLocalPath = req.files.map((file) => file.path);
+  const imageUploadPromises = imageLocalPath.map((path) =>
+    uploadOnCloudinary(path)
+  );
+  const imageResults = await Promise.all(imageUploadPromises);
+  const uploadImages = imageResults
+    .filter((result) => result)
+    .map((result) => result.url);
+  if (imageResults.length === 0) {
+    throw new ApiErrors("Failed to upload images", 500);
+  }
+  menu = await Menu.findByIdAndUpdate(id, {
+    name,
+    category,
+    price,
+    recipe,
+    image: uploadImages,
+  });
+  res.status(200).json(new ApiResponse(200, menu, "Menu updated successfully"));
+});
+export { getAllMenus, createMenu, GetMenuById, updateMenu };
