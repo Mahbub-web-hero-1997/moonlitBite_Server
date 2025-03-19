@@ -12,7 +12,7 @@ const router = new Router();
 
 router.route("/all").get(getAllMenus);
 router.route("/create").post(upload.array("image", 4), createMenu);
-router.route("/single/:id").patch(GetMenuById);
+router.route("/single/:id").get(GetMenuById);
 router.route("/update/:id").patch(upload.array("image"), updateMenu);
 router.route("/delete/:id").delete(deleteMenu);
 

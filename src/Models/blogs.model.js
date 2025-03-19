@@ -13,17 +13,10 @@ const blogsSchema=new Schema({
         type:String,
         required:true
     }],
-    createdAt:{
-        type:Date,
-        default:Date.now
-    },
-    updatedAt:{
-        type:Date,
-        default:Date.now
-    }
+
 },{
     timestamps:true
 })
-const Blogs=mongoose.model('Blog');
+const Blogs=mongoose.model('Blog', blogsSchema);
 
 export default Blogs;
