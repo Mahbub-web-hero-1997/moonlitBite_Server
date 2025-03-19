@@ -29,10 +29,11 @@ const menuSchema = new Schema(
         required: true,
       },
     ],
+    createdAt: { type: Date, required: true },
+    updatedAt: { type: Date, required: true },
   },
   {
     timestamps: true,
-    collection: "Menu",
   }
 );
 
