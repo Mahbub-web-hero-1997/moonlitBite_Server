@@ -9,7 +9,9 @@ app.use(express.urlencoded({ extended: true, limit:"16kb"}))
 app.use(cookieParser())
 
 import menuRoutes from "./Routes/menus.route.js"
+import reviewRoutes from "./Routes/reviews.route.js"
 app.use("/api/v1/menus", menuRoutes);
+app.use("/api/v1/reviews", reviewRoutes);
 
 
 

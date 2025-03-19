@@ -6,15 +6,11 @@ import asyncHandler from "../Utils/AsyncHandler.js";
 
 // Get All Menus
 const getAllMenus = asyncHandler(async (req, res) => {
-  try {
-    const menus = await Menu.find();
-    if (!menus)
-      return res.status(404).json(new ApiResponse(404, null, "No Menus found"));
+  const menus = await Menu.find();
+  if (!menus)
+    return res.status(404).json(new ApiResponse(404, null, "No Menus found"));
 
-    res.json(new ApiResponse(200, menus, "All Menus Fetched successfully"));
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+  res.json(new ApiResponse(200, menus, "All Menus Fetched successfully"));
 });
 // Create a new menu
 const createMenu = asyncHandler(async (req, res) => {
@@ -85,12 +81,12 @@ const updateMenu = asyncHandler(async (req, res) => {
 });
 
 // delete menu
-const deleteMenu=asyncHandler(async(req, res)=>{
-    const {id}=req.params;
-    const menu=await Menu.findByIdAndDelete(id);
-    if(!menu){
-        throw new ApiErrors(404, "Menu not found");
-    }
-    res.status(200).json(new ApiResponse(200, menu, "Menu deleted successfully"));
-})
+const deleteMenu = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const menu = await Menu.findByIdAndDelete(id);
+  if (!menu) {
+    throw new ApiErrors(404, "Menu not found");
+  }
+  res.status(200).json(new ApiResponse(200, menu, "Menu deleted successfully"));
+});
 export { getAllMenus, createMenu, GetMenuById, updateMenu, deleteMenu };
