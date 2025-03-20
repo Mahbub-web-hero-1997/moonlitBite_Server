@@ -53,4 +53,47 @@ const getSingleBlog = asyncHandler(async (req, res) => {
   }
   res.status(200).json(new ApiResponse(200, blog, "Blog fetched successfully"));
 });
-export { createBlog, getAllBlogs, getSingleBlog };
+// update blog api
+const updateBlog = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { title, content } = req.body;
+  const blog = await Blogs.findById(id);
+  if (!blog) {
+    throw new ApiErrors(404, "Blog not found");
+  }
+  const imagesLocalPath = req.files.map((file) => file.path);
+  const imageUploadPromises = imagesLocalPath.map((path) =>
+    uploadOnCloudinary(path)
+  );
+  const imageResults = await Promise.all(imageUploadPromises);
+  const uploadImages = imageResults
+    .filter((result) => result)
+    .map((result) => result.url);
+  if (imageResults.length === 0) {
+    throw new ApiErrors("Failed to upload images", 500);
+  }
+  const updateBlog = await Blogs.findByIdAndUpdate(
+    { _id: id },
+    {
+      title: title || blog.title,
+      content: content || blog.content,
+      images: uploadImages || blog.images,
+    },
+    {
+      new: true,
+    }
+  );
+  res
+    .status(200)
+    .json(new ApiResponse(200, updateBlog), "Blog updated successfully");
+});
+// Delete Blog
+const deleteBlog = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const blog = await Blogs.findByIdAndDelete(id);
+  if (!blog) {
+    throw new ApiErrors(404, "Blog not found");
+  }
+  res.status(200).json(new ApiResponse(200, blog, "Blog deleted successfully"));
+});
+export { createBlog, getAllBlogs, getSingleBlog, updateBlog, deleteBlog };
