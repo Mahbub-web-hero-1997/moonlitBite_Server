@@ -1,33 +1,41 @@
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-const userSchema = mongoose.Schema({
-  fullName: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  avatar: {
-    type: String,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  confirmPassword: {
-    type: String,   
-    validate: {
-      validator: function (value) {
-        return value === this.password;
+const userSchema = mongoose.Schema(
+  {
+    fullName: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    avatar: {
+      type: String,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    confirmPassword: {
+      type: String,
+      validate: {
+        validator: function (value) {
+          return value === this.password;
+        },
+        message: "Passwords do not match",
       },
-      message: "Passwords do not match",
+    },
+    refreshToken: {
+      type: String,
     },
   },
-});
+{
+  timestamps: true,
+}
+);
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
