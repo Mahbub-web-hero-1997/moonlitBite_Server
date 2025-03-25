@@ -60,30 +60,51 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 // Login User
-const loginUser=asyncHandler(async(req,res)=>{
-    const { email, password } = req.body;
-    const user=await User.findOne({email})
-    if(!user){
-        throw new ApiErrors(404, "User not found")
-    }
-    const isPasswordMatched=await user.isPasswordCorrect(password);
-    if(!isPasswordMatched){
-        throw new ApiErrors(401, "Invalid Password")
-    }
-    const {accessToken, refreshToken}=await generateAccessAndRefreshToken(user._id)
-    const loggedInUser = await User.findById(user._id).select(
-      "-password -refreshToken"
-    );
-    const options={
-      httpOnly: true,
-      secure:true,
-    }
-    res
-      .status(200)
-      .cookie("accessToken", accessToken, options)
-      .cookie("refreshToken", refreshToken, options)
-      .json(new ApiResponse(200,{user:loggedInUser}, "Login successful"));
-   
-})
+const loginUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new ApiErrors(404, "User not found");
+  }
+  const isPasswordMatched = await user.isPasswordCorrect(password);
+  if (!isPasswordMatched) {
+    throw new ApiErrors(401, "Invalid Password");
+  }
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+    user._id
+  );
+  const loggedInUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+  res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(new ApiResponse(200, { user: loggedInUser }, "Login successful"));
+});
 
-export { registerUser, loginUser };
+// Logout User
+const logoutUser = asyncHandler(async (req, res) => {
+ await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      refreshToken: undefined,
+    },
+    { new: true }
+  );
+  const options = {
+    httpOnly: true,
+    success: true,
+  };
+  res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, null, "Logout successful"));
+});
+
+export { registerUser, loginUser, logoutUser };
