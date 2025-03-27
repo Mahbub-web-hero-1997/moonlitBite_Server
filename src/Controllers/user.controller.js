@@ -115,6 +115,15 @@ const getAllUsers = asyncHandler(async (req, res) => {
       new ApiResponse(200, users, `${users.length} users found successfully`)
     );
 });
+// get current user
+const getCurrentUser = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+  const user = await User.findById(userId).select("-password -refreshToken");
+  if (!user) {
+    throw new ApiErrors(404, "User not found");
+  }
+  res.status(200).json(new ApiResponse(200, user, "current user fund"));
+});
 // update avatar
 const updateProfilePicture = asyncHandler(async (req, res) => {
   const userId = req.params.id;
@@ -166,12 +175,14 @@ const updateName = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, updatedName, "Name updated successfully"));
 });
+ 
 
 export {
   registerUser,
   loginUser,
   logoutUser,
   getAllUsers,
+  getCurrentUser,
   updateProfilePicture,
   updateName,
 };

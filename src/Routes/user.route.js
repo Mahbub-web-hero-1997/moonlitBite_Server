@@ -6,6 +6,7 @@ import {
   getAllUsers,
   updateProfilePicture,
   updateName,
+  getCurrentUser,
 } from "../Controllers/user.controller.js";
 import upload from "../Middlewares/multer.middleware.js";
 
@@ -16,7 +17,8 @@ router.route("/logout").post(logoutUser);
 router
   .route("/update/:id")
   .patch(upload.single("avatar"), updateProfilePicture);
-  router.route("/update/name/:id").patch(updateName);
-  router.route("/all").get(getAllUsers);
-  
+router.route("/update/name/:id").patch(updateName);
+router.route("/all").get(getAllUsers);
+router.route("/single/:id").get(getCurrentUser);
+
 export default router;
