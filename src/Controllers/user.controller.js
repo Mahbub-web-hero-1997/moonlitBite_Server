@@ -137,8 +137,17 @@ const updateProfilePicture = asyncHandler(async (req, res) => {
   res
     .status(200)
     .json(
-      new ApiResponse(200, updatedAvatar, "Profile Picture Updated Successfully")
+      new ApiResponse(
+        200,
+        updatedAvatar,
+        "Profile Picture Updated Successfully"
+      )
     );
+});
+// Update user Name
+const updateName = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+  console.log(userId);
 });
 
 export {
@@ -147,4 +156,5 @@ export {
   logoutUser,
   getAllUsers,
   updateProfilePicture,
+  updateName,
 };
