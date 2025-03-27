@@ -16,7 +16,7 @@ router.route("/logout").post(logoutUser);
 router
   .route("/update/:id")
   .patch(upload.single("avatar"), updateProfilePicture);
-router.route("/all").get(getAllUsers);
-router.route("/update/name/:id").patch(updateName);
-
+  router.route("/update/name/:id").patch(updateName);
+  router.route("/all").get(getAllUsers);
+  
 export default router;

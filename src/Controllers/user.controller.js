@@ -147,7 +147,24 @@ const updateProfilePicture = asyncHandler(async (req, res) => {
 // Update user Name
 const updateName = asyncHandler(async (req, res) => {
   const userId = req.params.id;
-  console.log(userId);
+  const { fullName } = req.body;
+  if (!fullName) {
+    throw new ApiErrors(400, "Full Name is required");
+  }
+  const updatedName = await User.findByIdAndUpdate(
+    userId,
+    { fullName },
+    { new: true }
+  );
+  if (!updatedName) {
+    throw new ApiErrors(404, "User not found");
+  }
+  if (!updatedName) {
+    throw new ApiErrors(500, "Failed to update name");
+  }
+  res
+    .status(200)
+    .json(new ApiResponse(200, updatedName, "Name updated successfully"));
 });
 
 export {
