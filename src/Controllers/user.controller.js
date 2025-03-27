@@ -89,7 +89,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
 // Logout User
 const logoutUser = asyncHandler(async (req, res) => {
- await User.findByIdAndUpdate(
+  await User.findByIdAndUpdate(
     req.user?._id,
     {
       refreshToken: undefined,
@@ -106,5 +106,45 @@ const logoutUser = asyncHandler(async (req, res) => {
     .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, null, "Logout successful"));
 });
+// get all user
+const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({});
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, users, `${users.length} users found successfully`)
+    );
+});
+// update avatar
+const updateProfilePicture = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+  const avatarLocalPath = req.file?.path;
+  if (!avatarLocalPath) {
+    throw new ApiErrors(400, "Please upload an avatar");
+  }
+  const avatar = await uploadOnCloudinary(avatarLocalPath);
+  if (!avatar) {
+    throw new ApiErrors(500, "Failed to upload avatar on cloudinary");
+  }
+  const updatedAvatar = await User.findByIdAndUpdate(
+    userId,
+    { avatar: avatar.url },
+    { new: true }
+  ).select("-password -refreshToken");
+  if (!updatedAvatar) {
+    throw new ApiErrors(404, "User not found");
+  }
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, updatedAvatar, "Profile Picture Updated Successfully")
+    );
+});
 
-export { registerUser, loginUser, logoutUser };
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  getAllUsers,
+  updateProfilePicture,
+};
