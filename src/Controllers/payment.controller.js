@@ -43,7 +43,7 @@ const createPaymentIntent = asyncHandler(async (req, res) => {
   );
 });
 
-// Confirm and Update Payment Info (e.g., from webhook or client success)
+// Confirm and Update Payment Info
 const confirmPayment = asyncHandler(async (req, res) => {
   const { paymentIntentId } = req.body;
 

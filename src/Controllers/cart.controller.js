@@ -5,11 +5,12 @@ import ApiResponse from "../utils/ApiResponse.js";
 
 // Get Cart by User ID
 const getCartByUserId = asyncHandler(async (req, res) => {
+  console.log("Get Cart by User ID", req.user);
   const userId = req.user.id;
   const cart = await Cart.findOne({ user: userId }).populate("items.product");
 
   if (!cart) {
-    throw new ApiErrors(404, "Cart not found");
+    throw new ApiErrors(404, "Cart is empty or not found");
   }
 
   res.status(200).json(new ApiResponse(200, cart, "Cart fetched successfully"));
@@ -19,11 +20,18 @@ const addItemToCart = asyncHandler(async (req, res) => {
   const userId = req.user.id;
   const { productId, quantity } = req.body;
 
-  const cart = await Cart.findOne({ user: userId });
+  // Try to find existing cart
+  let cart = await Cart.findOne({ userId });
+
+  // If no cart exists, create a new one
   if (!cart) {
-    throw new ApiErrors(404, "Cart not found");
+    cart = new Cart({
+      userId,
+      items: [],
+    });
   }
 
+  // Check if item already exists in cart
   const existingItem = cart.items.find((item) =>
     item.productId.equals(productId)
   );
