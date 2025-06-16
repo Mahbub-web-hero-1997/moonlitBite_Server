@@ -1,7 +1,7 @@
 import Cart from "../Models/cart.model.js";
-import ApiErrors from "../Utils/ApiErrors.js";
-import ApiResponse from "../Utils/ApiResponse.js";
-import asyncHandler from "../Utils/AsyncHandler.js";
+import asyncHandler from "../utils/AsyncHandler.js";
+import ApiErrors from "../utils/ApiErrors.js";
+import ApiResponse from "../utils/ApiResponse.js";
 
 // Get Cart by User ID
 const getCartByUserId = asyncHandler(async (req, res) => {
