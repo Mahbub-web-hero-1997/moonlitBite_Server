@@ -175,7 +175,6 @@ const updateName = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, updatedName, "Name updated successfully"));
 });
- 
 
 export {
   registerUser,
