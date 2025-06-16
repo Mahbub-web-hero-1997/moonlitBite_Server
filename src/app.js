@@ -1,8 +1,8 @@
-import express from "express"
-import cors from "cors"
-import cookieParser from "cookie-parser"
-const app = express()
-app.use(express.json())
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+const app = express();
+app.use(express.json());
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -10,22 +10,21 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
-app.use(express.static("./public/"))
-app.use(express.urlencoded({ extended: true, limit:"16kb"}))
-app.use(cookieParser())
+app.use(express.static("./public/"));
+app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+app.use(cookieParser());
 
-import menuRoutes from "./Routes/menus.route.js"
-import reviewRoutes from "./Routes/reviews.route.js"
-import blogRoutes from "./Routes/blogs.route.js"
+import menuRoutes from "./Routes/menus.route.js";
+import reviewRoutes from "./Routes/reviews.route.js";
+import blogRoutes from "./Routes/blogs.route.js";
 import userRoutes from "./Routes/user.route.js";
+import cartRoutes from "./Routes/cart.route.js";
 
 // import userRoutes from "./Routes/users.route.js"
 app.use("/api/v1/menus", menuRoutes);
 app.use("/api/v1/reviews", reviewRoutes);
-app.use("/api/v1/blogs",blogRoutes);
+app.use("/api/v1/blogs", blogRoutes);
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/cart", cartRoutes);
 
-
-
-
-export default app
+export default app;
