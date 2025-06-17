@@ -15,7 +15,7 @@ const userSchema = mongoose.Schema(
     avatar: {
       type: String,
       default:
-        "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?ga=GA1.1.468323543.1748316543&semt=ais_hybrid&w=740",
+        "https://res.cloudinary.com/mahbub1997/image/upload/v1748316736/bsdz2bdfuhbwelwbyvwh.jpg",
     },
     password: {
       type: String,
@@ -29,6 +29,11 @@ const userSchema = mongoose.Schema(
         },
         message: "Passwords do not match",
       },
+    },
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
     },
     refreshToken: {
       type: String,

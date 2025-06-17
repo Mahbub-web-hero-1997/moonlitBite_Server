@@ -8,6 +8,7 @@ const generateAccessAndRefreshToken = async (userId) => {
   const user = await User.findById(userId);
   const accessToken = await user.generateAccessToken();
   const refreshToken = await user.generateRefreshToken();
+  user.refreshToken = refreshToken;
   await user.save({
     validateBeforeSave: false,
   });
@@ -35,18 +36,18 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiErrors(400, "Passwords do not match");
   }
   const avatarLocalPath = req.file?.path;
-  if (!avatarLocalPath) {
-    throw new ApiErrors(400, "Please upload an avatar");
-  }
-  const avatar = await uploadOnCloudinary(avatarLocalPath);
-  if (!avatar) {
-    throw new ApiErrors(500, "Failed to upload avatar on cloudinary");
-  }
+  // if (!avatarLocalPath) {
+  //   throw new ApiErrors(400, "Please upload an avatar");
+  // }
+  // const avatar = await uploadOnCloudinary(avatarLocalPath);
+  // if (!avatar) {
+  //   throw new ApiErrors(500, "Failed to upload avatar on cloudinary");
+  // }
   const user = await User.create({
     fullName,
     email,
     password,
-    avatar: avatar.url,
+    // avatar: avatar.url,
   });
   const createdUser = await User.findById(user._id).select(
     "-password -refreshToken "
@@ -73,6 +74,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
     user._id
   );
+  console.log(accessToken, refreshToken);
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
@@ -84,7 +86,13 @@ const loginUser = asyncHandler(async (req, res) => {
     .status(200)
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
-    .json(new ApiResponse(200, { user: loggedInUser }, "Login successful"));
+    .json(
+      new ApiResponse(
+        200,
+        { user: loggedInUser, accessToken, refreshToken },
+        "Login successful"
+      )
+    );
 });
 
 // Logout User
@@ -92,7 +100,7 @@ const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user?._id,
     {
-      refreshToken: undefined,
+      $unset: { refreshToken: 1 },
     },
     { new: true }
   );
@@ -117,7 +125,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
 });
 // get current user
 const getCurrentUser = asyncHandler(async (req, res) => {
-  const userId = req.params.id;
+  const userId = req.user.id;
   const user = await User.findById(userId).select("-password -refreshToken");
   if (!user) {
     throw new ApiErrors(404, "User not found");
