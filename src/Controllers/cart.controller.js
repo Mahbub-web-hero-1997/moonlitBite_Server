@@ -5,10 +5,9 @@ import ApiResponse from "../utils/ApiResponse.js";
 
 // Get Cart by User ID
 const getCartByUserId = asyncHandler(async (req, res) => {
-  console.log("Get Cart by User ID", req.user);
+  // console.log("Get Cart by User ID", req.user);
   const userId = req.user.id;
-  const cart = await Cart.findOne({ user: userId }).populate("items.product");
-
+  const cart = await Cart.findOne({ userId }).populate("items.productId");
   if (!cart) {
     throw new ApiErrors(404, "Cart is empty or not found");
   }

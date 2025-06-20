@@ -7,13 +7,18 @@ import {
   updateMenu,
 } from "../Controllers/menus.controller.js";
 import upload from "../Middlewares/multer.middleware.js";
+import authorizeRole from "../Middlewares/authorizeRole.js";
 
 const router = new Router();
 
 router.route("/all").get(getAllMenus);
-router.route("/create").post(upload.array("image", 4), createMenu);
-router.route("/single/:id").get(GetMenuById);
-router.route("/update/:id").patch(upload.array("image"), updateMenu);
-router.route("/delete/:id").delete(deleteMenu);
+router
+  .route("/create")
+  .post(upload.array("image", 4), authorizeRole("admin"), createMenu);
+router.route("/single/:id").get(authorizeRole("admin, user"), GetMenuById);
+router
+  .route("/update/:id")
+  .patch(upload.array("image"), authorizeRole("admin"), updateMenu);
+router.route("/delete/:id").delete(authorizeRole("admin"), deleteMenu);
 
 export default router;

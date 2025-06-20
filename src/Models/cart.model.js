@@ -9,6 +9,7 @@ const cartSchema = new Schema(
     },
     items: [
       {
+        _id: false,
         productId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Menu",
