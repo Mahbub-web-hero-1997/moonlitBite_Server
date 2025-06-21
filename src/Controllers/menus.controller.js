@@ -22,10 +22,13 @@ const createMenu = asyncHandler(async (req, res) => {
     throw new ApiErrors("All fields should not be empty", 400);
   }
   const imageLocalPaths = req.files.map((file) => file.path);
+  console.log(imageLocalPaths);
+  console.log("Image File Path", imageLocalPaths);
   const imageUploadPromises = imageLocalPaths.map((path) =>
     uploadOnCloudinary(path)
   );
   const imageResults = await Promise.all(imageUploadPromises);
+
   const uploadImages = imageResults
     .filter((result) => result)
     .map((result) => result.url);
