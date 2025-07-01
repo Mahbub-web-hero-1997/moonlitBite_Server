@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../Models/user.model.js";
-import ApiErrors from "../utils/ApiErrors.js";
+import ApiErrors from "../Utils/ApiErrors.js";
 
 const verifyToken = async (req, res, next) => {
   try {
@@ -10,16 +10,19 @@ const verifyToken = async (req, res, next) => {
     if (!token) {
       throw new ApiErrors(401, "Unauthorized: No token provided in cookie");
     }
-
+    // console.log({ Token: token });
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY);
-
-    const user = await User.findById(decoded.id).select("id email fullName role");
+    // console.log({ decoded: decoded });
+    const user = await User.findById(decoded.id).select(
+      "id email fullName role"
+    );
 
     if (!user) {
       throw new ApiErrors(401, "Unauthorized: User not found");
     }
 
     req.user = user;
+    // console.log({ user: req.user });
 
     next();
   } catch (error) {

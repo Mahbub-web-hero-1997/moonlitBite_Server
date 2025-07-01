@@ -47,6 +47,9 @@ const createMenu = asyncHandler(async (req, res) => {
 // get menu by Id
 const GetMenuById = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  if (!id) {
+    throw new ApiErrors(400, "Invalid menu ID provided");
+  }
   const menu = await Menu.findById(id);
   if (!menu) {
     throw new ApiErrors(404, "Menu not found");

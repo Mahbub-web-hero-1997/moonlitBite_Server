@@ -1,4 +1,3 @@
-
 // const express = require("express");
 // const cors = require("cors");
 // const jwt = require("jsonwebtoken");
@@ -243,7 +242,7 @@
 //       const id = req.params.id;
 //       const filter = { _id: new ObjectId(id) };
 //       const updatedDocs = {
-//         $set: { role: "admin" }, 
+//         $set: { role: "admin" },
 //       };
 //       const result = await usersCollection.updateOne(filter, updatedDocs);
 //       res.send(result);
