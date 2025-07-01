@@ -20,6 +20,7 @@ import blogRoutes from "./Routes/blogs.route.js";
 import userRoutes from "./Routes/user.route.js";
 import cartRoutes from "./Routes/cart.route.js";
 import paymentRoutes from "./Routes/payment.route.js";
+import orderRoutes from "./Routes/order.route.js";
 
 // import userRoutes from "./Routes/users.route.js"
 app.use("/api/v1/menus", menuRoutes);
@@ -28,5 +29,6 @@ app.use("/api/v1/blogs", blogRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/payment", paymentRoutes);
+app.use("/api/v1/orders", orderRoutes);
 
 export default app;

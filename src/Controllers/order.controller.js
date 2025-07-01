@@ -1,7 +1,7 @@
-import Order from "../Models/order.model";
-import ApiErrors from "../utils/ApiErrors";
-import ApiResponse from "../Utils/ApiResponse";
-import asyncHandler from "../Utils/AsyncHandler";
+import Order from "../Models/order.model.js";
+import ApiErrors from "../utils/ApiErrors.js";
+import ApiResponse from "../Utils/ApiResponse.js";
+import asyncHandler from "../Utils/AsyncHandler.js";
 // Create an order
 const makeAnOrder = asyncHandler(async (req, res) => {
   const { productId, quantity, address, phone } = req.body;
@@ -84,6 +84,32 @@ const deleteOrder = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, deleted, "Order deleted successfully"));
 });
+// cancel order by user (only their own orders)
+const cancelOrder = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user._id;
+  const order = await Order.findById(id);
+  if (!order) {
+    throw new ApiErrors(404, "Order not found");
+  }
+  if (order.userId.toString() !== userId) {
+    throw new ApiErrors(403, "You can only cancel your own orders");
+  }
+  if (order.status !== "pending") {
+    throw new ApiErrors(400, "Only pending orders can be cancelled");
+  }
+  if (order.status === "cancelled") {
+    throw new ApiErrors(400, "Order is already cancelled");
+  }
+  if (order.status === "confirmed") {
+    throw new ApiErrors(400, "Confirmed orders cannot be cancelled");
+  }
+  order.status = "cancelled";
+  await order.save();
+  res
+    .status(200)
+    .json(new ApiResponse(200, order, "Order cancelled successfully"));
+});
 
 export {
   makeAnOrder,
@@ -91,4 +117,5 @@ export {
   getOrdersByUserId,
   updateOrderStatus,
   deleteOrder,
+  cancelOrder,
 };
