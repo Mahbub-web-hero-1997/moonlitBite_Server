@@ -1,5 +1,4 @@
-import mongoose, {Schema} from "mongoose";
-
+import mongoose, { Schema } from "mongoose";
 
 const menuSchema = new Schema(
   {
@@ -29,12 +28,11 @@ const menuSchema = new Schema(
         required: true,
       },
     ],
-   
   },
   {
     timestamps: true,
   }
 );
 
- const Menu = mongoose.model("Menu", menuSchema );
- export default Menu
+const Menu = mongoose.model("Menu", menuSchema);
+export default Menu;
