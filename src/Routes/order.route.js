@@ -13,7 +13,9 @@ import authorizeRole from "../Middlewares/authorizeRole.js";
 const router = Router();
 router.route("/create").post(verifyToken, makeAnOrder);
 router.route("/all").get(verifyToken, authorizeRole("admin"), getAllOrders);
-router.route("/myOrder").get(verifyToken, getOrdersByUserId);
+router
+  .route("/myOrder")
+  .get(verifyToken, authorizeRole("user"), getOrdersByUserId);
 router
   .route("/update/:id/status")
   .patch(verifyToken, authorizeRole("admin"), updateOrderStatus);

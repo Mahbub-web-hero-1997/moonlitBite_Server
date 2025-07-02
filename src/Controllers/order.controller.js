@@ -51,7 +51,8 @@ const getAllOrders = asyncHandler(async (req, res) => {
 });
 // Get orders by user ID
 const getOrdersByUserId = asyncHandler(async (req, res) => {
-  const userId = req.user?._id;
+  const userId = req.user;
+  console.log(req.user._id);
   if (!userId) {
     throw new ApiErrors(400, "User ID is required");
   }
@@ -62,6 +63,9 @@ const getOrdersByUserId = asyncHandler(async (req, res) => {
   if (!orders || orders.length === 0) {
     throw new ApiErrors(404, "No orders found for this user");
   }
+  res
+    .status(200)
+    .json(new ApiResponse(200, orders, "Orders retrieved successfully"));
 });
 
 // Update order status
