@@ -1,14 +1,18 @@
+import Menu from "../Models/menus.models.js";
 import Order from "../Models/order.model.js";
 import ApiErrors from "../utils/ApiErrors.js";
 import ApiResponse from "../Utils/ApiResponse.js";
 import asyncHandler from "../Utils/AsyncHandler.js";
 // Create an order
 const makeAnOrder = asyncHandler(async (req, res) => {
-  const { productId, quantity, address, phone } = req.body;
+  const { address, phone } = req.body.data;
+  const { productId, quantity } = req.body.orderData;
+  console.log({ address, phone, productId, quantity });
+
   const userId = req.user._id;
   if (
-    [productId, quantity, address, phone].some(
-      (field) => field.trim() === "" || field === undefined || field === null
+    [productId, address, phone].some(
+      (field) => field.trim() === "" || field === null || field === undefined
     )
   ) {
     throw new ApiErrors(400, "All fields are required");
@@ -47,7 +51,7 @@ const getAllOrders = asyncHandler(async (req, res) => {
 });
 // Get orders by user ID
 const getOrdersByUserId = asyncHandler(async (req, res) => {
-  const { userId } = req.user;
+  const userId = req.user?._id;
   if (!userId) {
     throw new ApiErrors(400, "User ID is required");
   }

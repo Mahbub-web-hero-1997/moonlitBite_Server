@@ -12,8 +12,8 @@ const verifyToken = async (req, res, next) => {
     }
     // console.log({ Token: token });
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY);
-    // console.log({ decoded: decoded });
-    const user = await User.findById(decoded.id).select(
+
+    const user = await User.findById(decoded._id).select(
       "id email fullName role"
     );
 

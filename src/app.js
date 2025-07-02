@@ -29,6 +29,6 @@ app.use("/api/v1/blogs", blogRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/payment", paymentRoutes);
-app.use("/api/v1/orders", orderRoutes);
+app.use("/api/v1/order", orderRoutes);
 
 export default app;
