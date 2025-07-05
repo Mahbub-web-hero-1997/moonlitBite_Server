@@ -6,12 +6,19 @@ import uploadOnCloudinary from "../Utils/Cloudinary.js";
 // Create A blog
 const createBlog = asyncHandler(async (req, res) => {
   const { title, content } = req.body;
+
   if (!title || !content) {
     throw new ApiErrors(400, "All fields are required");
   }
-  if ([title, content].some((field) => field.trim() == "")) {
+  if ([title, content].some((field) => field.trim() === "")) {
     throw new ApiErrors(400, "All fields should not be empty");
   }
+
+  // Check authenticated user
+  if (!req.user || !req.user._id) {
+    throw new ApiErrors(401, "Unauthorized: User not authenticated");
+  }
+
   const imageLocalPath = req.files.map((file) => file.path);
 
   const imageUploadPromises = imageLocalPath.map((path) =>
@@ -21,22 +28,36 @@ const createBlog = asyncHandler(async (req, res) => {
   const uploadImages = imageResults
     .filter((result) => result)
     .map((result) => result.url);
-  console.log(uploadImages);
-  if (imageResults.length === 0) {
-    throw new ApiErrors("Failed to upload images", 500);
+
+  if (uploadImages.length === 0) {
+    throw new ApiErrors(500, "Failed to upload images");
   }
 
   const blog = await Blogs.create({
     title,
     content,
     images: uploadImages,
+    blogger: req.user._id,
   });
-  if (imageResults.length === 0) {
-    throw new ApiErrors("Failed to upload images", 500);
+
+  res
+    .status(201)
+    .json(new ApiResponse(201, blog, "Blog successfully uploaded"));
+});
+
+// get blogs by user
+const getBlogsByUser = asyncHandler(async (req, res) => {
+  const userId = req.user?._id;
+  if (!userId) {
+    throw new ApiErrors(400, "User ID is required");
+  }
+  const blogs = await Blogs.find({ userId }).populate("userId", "name email");
+  if (!blogs || blogs.length === 0) {
+    throw new ApiErrors(404, "No blogs found for this user");
   }
   res
     .status(200)
-    .json(new ApiResponse(201, blog, "Blog successfully uploaded"));
+    .json(new ApiResponse(200, blogs, "Blogs retrieved successfully"));
 });
 // get all blogs
 const getAllBlogs = asyncHandler(async (req, res) => {
