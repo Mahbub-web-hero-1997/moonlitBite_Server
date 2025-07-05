@@ -24,6 +24,6 @@ router
   .patch(verifyToken, authorizeRole("user"), cancelOrder);
 router
   .route("/delete/:id")
-  .delete(verifyToken, authorizeRole("admin"), deleteOrder);
+  .delete(verifyToken, authorizeRole("admin", "user"), deleteOrder);
 
 export default router;

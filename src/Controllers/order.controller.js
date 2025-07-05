@@ -9,7 +9,7 @@ const makeAnOrder = asyncHandler(async (req, res) => {
   const { productId, quantity } = req.body.orderData;
   console.log({ address, phone, productId, quantity });
 
-  const userId = req.user._id;
+  const userId = req.user._id.toString();
   if (
     [productId, address, phone].some(
       (field) => field.trim() === "" || field === null || field === undefined
@@ -21,6 +21,7 @@ const makeAnOrder = asyncHandler(async (req, res) => {
   if (!product) {
     throw new ApiErrors(404, "Product not found");
   }
+
   const totalPrice = quantity * product.price;
   if (totalPrice <= 0) {
     throw new ApiErrors(400, "Total price must be greater than zero");
@@ -95,7 +96,7 @@ const deleteOrder = asyncHandler(async (req, res) => {
 // cancel order by user (only their own orders)
 const cancelOrder = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const userId = req.user._id;
+  const userId = req.user._id.toString();
   const order = await Order.findById(id);
   if (!order) {
     throw new ApiErrors(404, "Order not found");
