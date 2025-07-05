@@ -65,23 +65,22 @@ const updateMenu = asyncHandler(async (req, res) => {
     throw new ApiErrors(404, "Menu not found");
   }
 
-  const imageLocalPath = req.files.map((file) => file.path);
-  const imageUploadPromises = imageLocalPath.map((path) =>
-    uploadOnCloudinary(path)
-  );
-  const imageResults = await Promise.all(imageUploadPromises);
-  const uploadImages = imageResults
-    .filter((result) => result)
-    .map((result) => result.url);
-  if (imageResults.length === 0) {
-    throw new ApiErrors("Failed to upload images", 500);
-  }
+  // const imageLocalPath = req.files.map((file) => file.path);
+  // const imageUploadPromises = imageLocalPath.map((path) =>
+  //   uploadOnCloudinary(path)
+  // );
+  // const imageResults = await Promise.all(imageUploadPromises);
+  // const uploadImages = imageResults
+  //   .filter((result) => result)
+  //   .map((result) => result.url);
+  // if (imageResults.length === 0) {
+  //   throw new ApiErrors("Failed to upload images", 500);
+  // }
   menu = await Menu.findByIdAndUpdate(id, {
     name,
     category,
     price,
     recipe,
-    image: uploadImages,
   });
   res.status(200).json(new ApiResponse(200, menu, "Menu updated successfully"));
 });

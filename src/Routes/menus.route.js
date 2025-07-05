@@ -27,14 +27,12 @@ router
   .route("/single/:id")
   .get(verifyToken, authorizeRole("admin", "user"), GetMenuById);
 
-router
-  .route("/update/:id")
-  .patch(
-    verifyToken,
-    upload.array("image"),
-    authorizeRole("admin"),
-    updateMenu
-  );
+router.route("/update/:id").patch(
+  verifyToken,
+  // upload.array("image"),
+  authorizeRole("admin"),
+  updateMenu
+);
 
 router
   .route("/delete/:id")
