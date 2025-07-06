@@ -1,6 +1,6 @@
-import ApiErrors from "../Utils/ApiErrors";
-import ApiResponse from "../Utils/ApiResponse";
-import asyncHandler from "../Utils/AsyncHandler";
+import ApiErrors from "../Utils/ApiErrors.js";
+import ApiResponse from "../Utils/ApiResponse.js";
+import asyncHandler from "../Utils/AsyncHandler.js";
 
 const createParty = asyncHandler(async (req, res) => {
   const { title, items, description, image, price, status } = req.body;
