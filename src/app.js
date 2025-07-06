@@ -23,6 +23,7 @@ import paymentRoutes from "./Routes/payment.route.js";
 import orderRoutes from "./Routes/order.route.js";
 import storyRoutes from "./Routes/story.route.js";
 import partyRoutes from "./Routes/party.route.js";
+import expertRoutes from "./Routes/expert.route.js";
 
 // import userRoutes from "./Routes/users.route.js"
 app.use("/api/v1/menus", menuRoutes);
@@ -34,5 +35,6 @@ app.use("/api/v1/payment", paymentRoutes);
 app.use("/api/v1/order", orderRoutes);
 app.use("/api/v1/story", storyRoutes);
 app.use("/api/v1/party", partyRoutes);
+app.use("/api/v1/expert", expertRoutes);
 
 export default app;

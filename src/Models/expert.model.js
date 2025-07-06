@@ -13,15 +13,15 @@ const expertSchema = new Schema(
       type: String,
       required: true,
     },
-    description: {
+    bio: {
       type: String,
       required: true,
     },
     socialLinks: {
-      facebook: { type: String },
-      twitter: { type: String },
-      linkedin: { type: String },
-      instagram: { type: String },
+      facebook: { type: String, default: "#" },
+      twitter: { type: String, default: "#" },
+      linkedin: { type: String, default: "#" },
+      instagram: { type: String, default: "#" },
     },
   },
   {
