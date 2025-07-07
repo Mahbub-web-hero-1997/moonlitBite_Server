@@ -14,16 +14,16 @@ app.use(express.static("./public/"));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(cookieParser());
 
-import menuRoutes from "./src/Routes/menus.route.js";
-import reviewRoutes from "./src/Routes/reviews.route.js";
-import blogRoutes from "./src/Routes/blogs.route.js";
-import userRoutes from "./src/Routes/user.route.js";
-import cartRoutes from "./src/Routes/cart.route.js";
-import paymentRoutes from "./src/Routes/payment.route.js";
-import orderRoutes from "./src/Routes/order.route.js";
-import storyRoutes from "./src/Routes/story.route.js";
-import partyRoutes from "./src/Routes/party.route.js";
-import expertRoutes from "./src/Routes/expert.route.js";
+import menuRoutes from "./Routes/menus.route.js";
+import reviewRoutes from "./Routes/reviews.route.js";
+import blogRoutes from "./Routes/blogs.route.js";
+import userRoutes from "./Routes/user.route.js";
+import cartRoutes from "./Routes/cart.route.js";
+import paymentRoutes from "./Routes/payment.route.js";
+import orderRoutes from "./Routes/order.route.js";
+import storyRoutes from "./Routes/story.route.js";
+import partyRoutes from "./Routes/party.route.js";
+import expertRoutes from "./Routes/expert.route.js";
 
 // import userRoutes from "./Routes/users.route.js"
 app.use("/api/v1/menus", menuRoutes);
