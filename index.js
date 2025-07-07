@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
-import ConnectionDb from "./DB/ConnectionDb";
-import app from "./app";
+import ConnectionDb from "./DB/ConnectionDb.js";
+import app from "./app.js";
 
 dotenv.config();
 const port = process.env.PORT;
