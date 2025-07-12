@@ -1,8 +1,8 @@
-import Payment from "../models/payment.model.js";
-import asyncHandler from "../utils/AsyncHandler.js";
-import ApiResponse from "../utils/ApiResponse.js";
-import ApiErrors from "../utils/ApiErrors.js";
 import stripe from "../Config/stripe.config.js";
+import Payment from "../models/payment.model.js";
+import ApiErrors from "../Utils/ApiErrors.js";
+import ApiResponse from "../Utils/ApiResponse.js";
+import asyncHandler from "../Utils/AsyncHandler.js";
 
 // Create Stripe Payment Intent and Save Record
 const createPaymentIntent = asyncHandler(async (req, res) => {
