@@ -1,8 +1,8 @@
-import uploadOnCloudinary from "../../../../../Project_For_CV/daily_lens/daily_lens_server/src/utils/cloudinary.js";
 import Menu from "../Models/menus.models.js";
 import ApiErrors from "../Utils/ApiErrors.js";
 import ApiResponse from "../Utils/ApiResponse.js";
 import asyncHandler from "../Utils/AsyncHandler.js";
+import uploadOnCloudinary from "../Utils/Cloudinary.js";
 
 // Get All Menus
 const getAllMenus = asyncHandler(async (req, res) => {
