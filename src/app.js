@@ -24,6 +24,7 @@ import orderRoutes from "./Routes/order.route.js";
 import storyRoutes from "./Routes/story.route.js";
 import partyRoutes from "./Routes/party.route.js";
 import expertRoutes from "./Routes/expert.route.js";
+import ApiResponse from "./Utils/ApiResponse.js";
 
 // import userRoutes from "./Routes/users.route.js"
 app.use("/api/v1/menus", menuRoutes);
@@ -36,5 +37,12 @@ app.use("/api/v1/order", orderRoutes);
 app.use("/api/v1/story", storyRoutes);
 app.use("/api/v1/party", partyRoutes);
 app.use("/api/v1/expert", expertRoutes);
+
+app.get("/api/v1/", (req, res) => {
+  const response = "MoonLit-Bites API is running";
+  res
+    .status(200)
+    .json(new ApiResponse(200, response, "Server Running Successfully"));
+});
 
 export default app;
