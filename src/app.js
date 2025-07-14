@@ -38,7 +38,7 @@ app.use("/api/v1/story", storyRoutes);
 app.use("/api/v1/party", partyRoutes);
 app.use("/api/v1/expert", expertRoutes);
 
-app.get("/api/v1/", (req, res) => {
+app.get("/", (req, res) => {
   const response = "MoonLit-Bites API is running";
   res
     .status(200)
