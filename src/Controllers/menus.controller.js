@@ -15,23 +15,26 @@ const getAllMenus = asyncHandler(async (req, res) => {
 // Create a new menu
 const createMenu = asyncHandler(async (req, res) => {
   const { name, category, price, recipe } = req.body;
-
   if (!name || !category || !price || !recipe) {
     throw new ApiErrors("All fields are required", 400);
   }
-
-  if (!req.files || req.files.length === 0) {
-    throw new ApiErrors("Image files are required", 400);
+  if ([name, category, price, recipe].some((field) => field.trim() === "")) {
+    throw new ApiErrors("All fields should not be empty", 400);
   }
-  console.log(req.files);
-  const imageUploadPromises = req.files.map((file) =>
-    uploadOnCloudinary(file.buffer, file.originalname)
-  );
+  // const imageLocalPaths = req.files.map((file) => file.path);
+  // console.log(imageLocalPaths);
+  // console.log("Image File Path", imageLocalPaths);
+  // const imageUploadPromises = imageLocalPaths.map((path) =>
+  //   uploadOnCloudinary(path)
+  // );
+  // const imageResults = await Promise.all(imageUploadPromises);
 
-  const imageResults = await Promise.all(imageUploadPromises);
-
-  const uploadImages = imageResults.map((img) => img.secure_url);
-
+  // const uploadImages = imageResults
+  //   .filter((result) => result)
+  //   .map((result) => result.url);
+  // if (imageResults.length === 0) {
+  //   throw new ApiErrors("Failed to upload images", 500);
+  // }
   const menu = await Menu.create({
     name,
     category,
@@ -39,10 +42,8 @@ const createMenu = asyncHandler(async (req, res) => {
     recipe,
     image: uploadImages,
   });
-
   res.status(201).json(new ApiResponse(201, menu, "Menu created successfully"));
 });
-
 // get menu by Id
 const GetMenuById = asyncHandler(async (req, res) => {
   const { id } = req.params;
