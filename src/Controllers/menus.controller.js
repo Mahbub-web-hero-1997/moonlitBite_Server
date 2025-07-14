@@ -14,11 +14,13 @@ const getAllMenus = asyncHandler(async (req, res) => {
 });
 // Create a new menu
 const createMenu = asyncHandler(async (req, res) => {
-  const { name, category, price, recipe } = req.body;
-  if (!name || !category || !price || !recipe) {
+  const { name, category, price, recipe, image } = req.body;
+  if (!name || !category || !price || !recipe || image) {
     throw new ApiErrors("All fields are required", 400);
   }
-  if ([name, category, price, recipe].some((field) => field.trim() === "")) {
+  if (
+    [name, category, price, recipe, image].some((field) => field.trim() === "")
+  ) {
     throw new ApiErrors("All fields should not be empty", 400);
   }
   // const imageLocalPaths = req.files.map((file) => file.path);
@@ -40,7 +42,7 @@ const createMenu = asyncHandler(async (req, res) => {
     category,
     price,
     recipe,
-    image: uploadImages,
+    image,
   });
   res.status(201).json(new ApiResponse(201, menu, "Menu created successfully"));
 });
