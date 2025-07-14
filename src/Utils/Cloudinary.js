@@ -10,6 +10,7 @@ cloudinary.config({
 });
 
 const uploadOnCloudinary = async (fileBuffer, filename) => {
+  console.log(filename);
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {

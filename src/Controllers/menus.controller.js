@@ -23,7 +23,7 @@ const createMenu = asyncHandler(async (req, res) => {
   if (!req.files || req.files.length === 0) {
     throw new ApiErrors("Image files are required", 400);
   }
-
+  console.log(req.files);
   const imageUploadPromises = req.files.map((file) =>
     uploadOnCloudinary(file.buffer, file.originalname)
   );
