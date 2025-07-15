@@ -6,7 +6,7 @@ import {
   GetMenuById,
   updateMenu,
 } from "../Controllers/menus.controller.js";
-import upload from "../Middlewares/multer.middleware.js";
+// import upload from "../Middlewares/multer.middleware.js";
 import authorizeRole from "../Middlewares/authorizeRole.js";
 import verifyToken from "../Middlewares/verifyToken.js";
 
@@ -14,14 +14,7 @@ const router = new Router();
 
 router.route("/all").get(getAllMenus);
 
-router
-  .route("/create")
-  .post(
-    verifyToken,
-    upload.array("image", 4),
-    authorizeRole("admin"),
-    createMenu
-  );
+router.route("/create").post(verifyToken, authorizeRole("admin"), createMenu);
 
 router
   .route("/single/:id")

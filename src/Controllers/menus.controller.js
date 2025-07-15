@@ -14,34 +14,26 @@ const getAllMenus = asyncHandler(async (req, res) => {
 });
 // Create a new menu
 const createMenu = asyncHandler(async (req, res) => {
-  const { name, category, price, recipe } = req.body;
-
-  if (!name || !category || !price || !recipe) {
+  const { name, category, price, recipe, image } = req.body;
+  console.log(req.body);
+  if (!name || !category || !price || !recipe || !image) {
     throw new ApiErrors("All fields are required", 400);
   }
-
-  if (!req.files || req.files.length === 0) {
-    throw new ApiErrors("No image uploaded", 400);
+  if (
+    [name, category, price, recipe, image].some((field) => field.trim() === "")
+  ) {
+    throw new ApiErrors("All fields should not be empty", 400);
   }
-
-  const uploadPromises = req.files.map((file) =>
-    uploadOnCloudinary(file.buffer, file.originalname)
-  );
-
-  const imageResults = await Promise.all(uploadPromises);
-  const uploadImages = imageResults.map((img) => img.secure_url);
-
+  console.log(req.body);
   const menu = await Menu.create({
     name,
     category,
     price,
     recipe,
-    image: uploadImages,
+    image,
   });
-
   res.status(201).json(new ApiResponse(201, menu, "Menu created successfully"));
 });
-
 // get menu by Id
 const GetMenuById = asyncHandler(async (req, res) => {
   const { id } = req.params;
